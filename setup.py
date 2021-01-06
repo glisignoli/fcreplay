@@ -32,7 +32,7 @@ setup(
         "bootstrap-flask==1.5.1",
         "cachetools==4.2.0; python_version ~= '3.5'",
         "cairocffi==1.2.0; python_version >= '3.6'",
-        "cairosvg==2.5.0",
+        "cairosvg==2.5.1",
         "cerberus==1.3.2",
         "certifi==2020.12.5",
         "cffi==1.14.4",

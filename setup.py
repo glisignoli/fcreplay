@@ -59,7 +59,7 @@ setup(
         "google-auth-httplib2==0.0.4",
         "googleapis-common-protos==1.52.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
         "gunicorn==20.0.4",
-        "httplib2==0.18.1",
+        "httplib2==0.19.0",
         "i3ipc==2.2.1",
         "idna==2.10",
         "internetarchive==1.9.6",

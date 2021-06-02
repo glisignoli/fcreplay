@@ -94,7 +94,7 @@ setup(
         "sqlalchemy-utils==0.36.8",
         "tqdm==4.59.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
         "uritemplate==3.0.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
-        "urllib3==1.26.4",
+        "urllib3==1.26.5",
         "visitor==0.1.3",
         "wcwidth==0.2.5",
         "websocket-client==0.58.0; python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3'",

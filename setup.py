@@ -65,7 +65,7 @@ setup(
         "mouseinfo==0.1.3",
         "numpy==1.20.2",
         "packaging==20.9; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
-        "pillow==8.1.2; python_version >= '3.6'",
+        "pillow==8.3.2; python_version >= '3.6'",
         "protobuf==3.15.6",
         "psycopg2==2.8.6",
         "pyasn1==0.4.8",

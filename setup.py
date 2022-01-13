@@ -67,7 +67,7 @@ setup(
         "oauth2client==4.1.3",
         "oauthlib==3.1.1; python_version >= '3.6'",
         "packaging==21.2; python_version >= '3.6'",
-        "pillow==8.4.0",
+        "pillow==9.0.0",
         "progressbar2==3.55.0",
         "protobuf==3.19.1; python_version >= '3.1'",
         "psycopg2==2.9.2",

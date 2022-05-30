@@ -1,10 +1,10 @@
 {
     "description_append_file": [
         false,
-        "/path/to/file.txt"
+        "/root/description_appdend.txt"
     ],
-    "fcadefbneo_path": "/home/fcrecorder/fcreplay/Fightcade/emulator/fbneo",
-    "fcreplay_dir": "/home/fcrecorder/fcreplay",
+    "fcadefbneo_path": "/Fightcade/emulator/fbneo",
+    "fcreplay_dir": "/root",
     "ia_settings": {
         "collection": "opensource_movies",
         "creator": "Your Name",
@@ -19,7 +19,7 @@
         ]
     },
     "kill_all": false,
-    "logfile": "/home/fcrecorder/fcreplay/fcreplay.log",
+    "logfile": "/root/fcreplay.log",
     "logging_loki": {
         "enabled": false,
         "password": "securepassword",
@@ -27,6 +27,7 @@
         "username": "someusername"
     },
     "loglevel": "DEBUG",
+    "get_weekly_replay_pages": 1,
     "max_replay_length": 10800,
     "min_replay_length": 60,
     "player_replay_first": true,
@@ -34,12 +35,12 @@
     "record_timeout": 120,
     "remove_old_avi_files": true,
     "resolution": [1920, 1080],
-    "sql_baseurl": "postgres://user:pass@address:port",
+    "sql_baseurl": "postgresql://fcreplay:somesecurepassword@postgres/fcreplay",
     "secret_key": "some_random_data",
     "upload_to_ia": false,
     "upload_to_yt": false,
-    "youtube_credentials": "/home/fcrecorder/.youtube-upload-credentials.json",
+    "youtube_credentials": "/root/.youtube-upload-credentials.json",
     "youtube_max_daily_uploads": 5,
-    "youtube_secrets": "/home/fcrecorder/.client_secrets.json",
-    "bad_words_file": "/home/fcrecorder/fcreplay/bad_words.txt"
+    "youtube_secrets": "/root/.client_secrets.json",
+    "bad_words_file": "/root/fcreplay/bad_words.txt"
 }

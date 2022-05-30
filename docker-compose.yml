@@ -9,7 +9,7 @@ services:
       - postgres
       - world
     volumes:
-      - /path/to/config.json:/fcreplay/config.json
+      - ./config.json:/fcreplay/config.json
     environment:
       - FCREPLAY_CONFIG=/app/config.json
       - APP_MODULE=fcreplay.site.app:app
@@ -34,13 +34,13 @@ services:
       - ROMS=/path/to/ROMs
       - YOUTUBE_UPLOAD_CREDENTIALS=/path/to/.youtube-upload-credentials.json
       - AVI_TEMP_DIR=/path/to/large/avi_storage_temp
-      - GET_WEEKLY=false
+      - GET_WEEKLY=true
       - BAD_WORDS_FILE=/path/to/bad_words.txt
     volumes:
-      - /path/to/config.json:/root/config.json:ro
-      - /path/to/bad_words_file.txt:/root/bad_words_file.txt:ro
+      - ./config.json:/root/config.json:ro
+      - ./bad_words_file.txt:/root/bad_words_file.txt:ro
       - /var/run/docker.sock:/var/run/docker.sock
-      - /path/to/large/avi_storage_temp:/avi_storage_temp
+      - ./avi_storage_temp:/avi_storage_temp
     networks:
       - postgres
       - world
@@ -51,7 +51,7 @@ services:
     image: fcreplay/image:latest
     command: "fcreplay tasker start check_top_weekly"
     volumes:
-      - /path/to/config.json:/root/config.json:ro
+      - ./config.json:/root/config.json:ro
     networks:
       - postgres
       - world
@@ -62,7 +62,7 @@ services:
     image: fcreplay/image:latest
     command: "fcreplay tasker start check_video_status"
     volumes:
-      - /path/to/config.json:/root/config.json:ro
+      - ./config.json:/root/config.json:ro
     networks:
       - postgres
       - world
@@ -73,7 +73,7 @@ services:
     image: fcreplay/image:latest
     command: "fcreplay tasker start retry_failed_replays"
     volumes:
-      - /path/to/config.json:/root/config.json:ro
+      - ./config.json:/root/config.json:ro
     networks:
       - postgres
       - world
@@ -84,7 +84,7 @@ services:
     image: fcreplay/image:latest
     command: "fcreplay tasker start delete_failed_replays"
     volumes:
-      - /path/to/config.json:/root/config.json:ro
+      - ./config.json:/root/config.json:ro
     networks:
       - postgres
       - world
@@ -99,7 +99,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
       PGDATA: /data/postgres
     volumes:
-      - postgres:/data/postgres
+      - /data/fcreplay_db:/data/postgres
     networks:
       - postgres
     restart: unless-stopped

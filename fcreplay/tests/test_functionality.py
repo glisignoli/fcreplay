@@ -28,6 +28,20 @@ class TestFunctionality:
 
         return True
 
+    def _check_docker_compose(self) -> bool:
+        """Check to see if docker-compose is installed
+
+        Returns:
+            bool: True if docker-compose is installed
+        """
+        rc = subprocess.run(['docker-compose', '--version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        if rc.returncode != 0:
+            print(f"Stdout: {str(rc.stdout)}\nStderr: {str(rc.stderr)}")
+            raise Exception("Docker-compose is not installed")
+
+        return True
+
     def _is_upload_enabled(self) -> bool:
         """Check to see if upload_to_ia and upload_to_yt are set in the config.
 
@@ -173,14 +187,14 @@ class TestFunctionality:
         return True
 
     def _check_video_status_empty(self) -> bool:
-        """Check if video status is empty .
+        """Check if video status is empty.
 
         Returns:
             bool: True if video status is empty
         """
         # Check the video status
         # Wait for fcreplay-tasker-check_video_status to start
-        subprocess.run(['docker-compose', 'up', '-d', 'fcreplay-tasker-check_video_status'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        rc = subprocess.run(['docker-compose', 'up', '-d', 'fcreplay-tasker-check_video_status'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         check_count = 0
         while not self._is_container_running('fcreplay_fcreplay-tasker-check_video_status_1'):
@@ -543,7 +557,7 @@ class TestFunctionality:
             bool: True if the site started
         """
         # Start the site
-        rc = subprocess.run(['docker-compose', 'run', '-d', '--service-ports', 'fcreplay-site'], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        rc = subprocess.run(['docker-compose', 'run', '-d', '--service-ports', 'fcreplay-site'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         self.site_instance_id = rc.stdout.decode('utf-8').strip()
 
         # Wait for the container to start
@@ -599,15 +613,9 @@ class TestFunctionality:
         Returns:
             bool: True if the container was successfully torn down
         """
-        override = self._get_override('./docker-compose.override.yml')
-        pg_path = override['services']['postgres']['volumes'][0].split(':')[0]
-
         # Stop docker-compose
         subprocess.run(['docker-compose', 'stop'])
         subprocess.run(['docker-compose', 'rm', '-f'])
-
-        # Remove new database
-        subprocess.run(['sudo', 'rm', '-rf', pg_path])
 
         # Check if fcreplay-site is running and remove it
         site_id = self._get_container_id('fcreplay_fcreplay-site')
@@ -619,6 +627,9 @@ class TestFunctionality:
 
     def test_functionality(self):
         """Test the functionality of the fcreplay."""
+        print("Checking if docker-compose is installed")
+        assert self._check_docker_compose(), "Docker-compose is not installed"
+
         # Checking if upload is set (we don't want it set)
         print("Checking if upload_to_ia or upload_to_yt is enabled")
         assert not self._is_upload_enabled(), "Upload is enabled, this is not allowed"
@@ -672,6 +683,9 @@ class TestFunctionality:
         assert self._teardown(), 'Failed to teardown'
 
     def test_site(self):
+        print("Checking if docker-compose is installed")
+        assert self._check_docker_compose(), "Docker-compose is not installed"
+
         print("Running Standup")
         assert self._standup(), 'Failed to standup'
 
@@ -686,7 +700,7 @@ class TestFunctionality:
         """Test the fcreplay-site."""
         # Start the fcreplay-site
         print("Starting fcreplay-site")
-        assert self._start_fcreplay_site(), "Failed to check fcreplay-site"
+        assert self._start_fcreplay_site(), "Failed to start fcreplay-site"
 
         # Check for broken links
         print("Checking for broken links")

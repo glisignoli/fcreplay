@@ -242,7 +242,7 @@ class Getreplay:
             str: Returns the string status of the request
         """
         # Validate url, this could probably be done better
-        pattern = re.compile('^https://replay\.fightcade\.com/fbneo/.*/[0-9]*-[0-9]*$')
+        pattern = re.compile(r'^https://replay\.fightcade\.com/fbneo/.*/[0-9]*-[0-9]*$')
         if not pattern.match(url):
             return(status.INVALID_URL)
 

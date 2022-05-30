@@ -2,16 +2,17 @@ version: "3.8"
 services:
   fcreplay-site:
     volumes:
-      - /path/to/config.json:/app/config.json:ro
+      - ./config.json:/app/config.json:ro
     ports:
       - 80:80
 
   fcreplay-tasker:
     command: 'fcreplay tasker start recorder'
     volumes:
-      - /path/to/config.json:/root/config.json:ro
+      - ./config.json:/root/config.json:ro
       - /var/run/docker.sock:/var/run/docker.sock
-      - /path/to/large/avi_storage_temp:/avi_storage_temp
+      - ./avi_storage_temp:/avi_storage_temp
+      - ./fcreplay_tasker.log:/root/fcreplay.log
     ports:
       - 5678:5678
     environment:
@@ -26,23 +27,31 @@ services:
       - ROMS=/path/to/ROMs
       - YOUTUBE_UPLOAD_CREDENTIALS=/path/to/.youtube-upload-credentials.json
       - AVI_TEMP_DIR=/path/to/large/avi_storage_temp
-      #- REMOTE_DEBUG=true # Setting this to anything enables debug
+      - GET_WEEKLY=true
+      - BAD_WORDS_FILE=/path/to/bad_words.txt
+      #- REMOTE_DEBUG=true # Setting this to anything enables remote debuging
 
   fcreplay-tasker-check_top_weekly:
     volumes:
-      - /path/to/config.json:/root/config.json:ro
+      - ./config.json:/root/config.json:ro
+      - ./fcreplay_check_top_weekly.log:/root/fcreplay.log
+    environment:
+      - GET_WEEKLY=true
 
   fcreplay-tasker-check_video_status:
     volumes:
-      - /path/to/config.json:/root/config.json:ro
+      - ./config.json:/root/config.json:ro
+      - ./fcreplay_check_video_status.log:/root/fcreplay.log
 
   fcreplay-tasker-retry_failed_replays:
     volumes:
-      - /path/to/config.json:/root/config.json:ro
+      - ./config.json:/root/config.json:ro
+      - ./fcreplay_retry_failed_replays.log:/root/fcreplay.log
 
   fcreplay-tasker-delete_failed_replays:
     volumes:
-      - /path/to/config.json:/root/config.json:ro
+      - ./config.json:/root/config.json:ro
+      - ./fcreplay_delete_failed_replays.log:/root/fcreplay.log
 
   postgres:
     environment:

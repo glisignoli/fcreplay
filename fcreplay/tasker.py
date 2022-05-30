@@ -198,6 +198,7 @@ class Tasker:
     def check_top_weekly(self):
         if 'GET_WEEKLY' in os.environ:
             if os.environ['GET_WEEKLY'].lower() == 'true':
+                print("Getting weekly replays")
                 g = Getreplay()
                 schedule.every(1).hour.do(g.get_top_weekly)
 
@@ -205,6 +206,10 @@ class Tasker:
                 while True:
                     schedule.run_pending()
                     time.sleep(1)
+            else:
+                print("Not getting weekly replays")
+        else:
+            print("GET_WEEKLY is not set, not getting weekly replays")
 
     def check_video_status(self):
         self.update_video_status()

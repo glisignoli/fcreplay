@@ -34,7 +34,7 @@ To trigger recording, the file `started.inf` is checked. If the file exists then
 
 The i3 window manager is used to ensure that the fcadefbneo window is always in the same place.
 
-This is all done in a headless X11 session
+This is all done in a headless X11 session inside a docker container
 
 ## Todo
  - Better exception handling.
@@ -160,5 +160,15 @@ docker-compose run --rm -v /path/to/config.json:/root/config.json:ro fcreplay-ta
 ## Getting replays
 This will download a replay, and place it in the database, marking it ready to be encoded:
 ```commandline
-docker-compose run --rm -v /path/to/config.json:/root/config.json:ro fcreplay-tasker fcreplayget --help
+docker-compose run --rm -v /path/to/config.json:/root/config.json:ro fcreplay-tasker fcreplay get replay <url>
+```
+
+```
+docker-compose run --rm -v ./config.json:/root/config.json:ro fcreplay-tasker fcreplay get replay https://replay.fightcade.com/fbneo/sf2hf/1653982283355-4647
+```
+
+## CLI Interface
+If you want a command line interface to interact with the running server, use:
+```
+docker-compose run --rm -v ./config.json:/root/config.json:ro fcreplay-tasker fcreplay cli
 ```

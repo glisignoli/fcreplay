@@ -2,7 +2,8 @@
 ## Setup
 Use pipenv:
 ```
-pipenv install --python
+pipenv install
+pipenv install --dev
 ```
 
 ## Tests

@@ -146,6 +146,7 @@ To run a full end-to-end encoding test:
 ```
 pipenv run pytest --runslow -s ./fcreplay/tests/test_functionality.py
 ```
+:exclamation: For functionality tests to work, the `GET_WEEKLY` environment variables must be set to true. This can be disabled againe once the functionality tests are finished.
 
 # Usage
 The typical useage of fcreplay is to run `docker-compose up` to start the task scheduler. Thist will launch the replay encoding containers when replays are subbmitted to be encoded.

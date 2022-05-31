@@ -157,6 +157,11 @@ This command will do a basic check on your config:
 docker-compose run --rm -v /path/to/config.json:/root/config.json:ro fcreplay-tasker fcreplay config validate /root/config.json
 ```
 
+## Configurartion information
+I might make a more detailed guide on the `config.json` file but in general the default settings should work fine. I would recomend having a look at `config.py` for some configuration infromation.
+
+:exclamation: All of the paths inside this file are locatons within the docker containers. They don't need to be changed and will be removed in a future release.
+
 ## Getting replays
 This will download a replay, and place it in the database, marking it ready to be encoded:
 ```commandline

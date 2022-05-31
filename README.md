@@ -172,3 +172,31 @@ If you want a command line interface to interact with the running server, use:
 ```
 docker-compose run --rm -v ./config.json:/root/config.json:ro fcreplay-tasker fcreplay cli
 ```
+
+# Docker containers
+Some information about the various containers
+
+## fcreplay-site
+The frontend site used to view replays
+
+## fcreplay-tasker
+Multi-use container. Typically used as a 'daemon' service that will launch encoding instances when it detects that a replay is available to be encoded.
+
+This container can also be run manually to trigger various command line functions with:
+```
+docker-compose run --rm -v ./config.json:/root/config.json:ro fcreplay-tasker fcreplay
+```
+
+## fcreplay-tasker-check_top_weekly
+Instance of fcreplay-tasker that is used to gather the top weekly replay from https://fightcade.com/replay
+
+Will only run when the environment variable `GET_WEEKLY` is set to `true`
+
+## fcreplay-tasker-check_video_status
+Instance of fcreplay-tasker that is used to check if a video has finish post upload encoding on youtube/archive.org. Videos aren't viewable on `fcreplay-site` until this is successful
+
+## fcreplay-tasker-retry_failed_replays
+Instance of fcreplay-tasker that is used to retry failed replays. By default, replays are retried 5 times.
+
+## fcreplay-tasker-delete_failed_replays
+Instance of fcreplay-tasker that is used to delete failed replays. This usually happens after 5 failures

@@ -1387,7 +1387,10 @@
     },
     "sfa3aism": {
         "game_name": "Street Fighter Alpha 3 - A-ISM Only [Hack]",
-        "aspect_ratio": []
+        "aspect_ratio": [
+            4,
+            3
+        ]
     },
     "sfiii": {
         "game_name": "Street Fighter III: New Generation",
@@ -1601,8 +1604,7 @@
     },
     "timekill": {
         "game_name": "Time Killers",
-        "aspect_ratio":
-        [
+        "aspect_ratio": [
             4,
             3
         ]
@@ -1670,8 +1672,8 @@
             3
         ]
     },
-    "umk3pb1": {
-        "game_name": "Ultimate Mortal Kombat 3 Plus - Beta 1",
+    "umk3p": {
+        "game_name": "Ultimate Mortal Kombat 3 Plus - Beta 2",
         "aspect_ratio": [
             4,
             3

@@ -59,7 +59,7 @@ setup(
         "jsonpatch==1.32; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'",
         "jsonpointer==2.2; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
         "junit-xml==1.9",
-        "lxml==4.8.0",
+        "lxml==4.9.1",
         "markupsafe==2.1.1; python_version >= '3.7'",
         "mouseinfo==0.1.3",
         "oauth2client==4.1.3",

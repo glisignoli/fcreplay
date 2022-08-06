@@ -46,3 +46,6 @@ fcreplay_pgdata
 
 # Bad words
 bad_words.txt
+
+# Pip
+Pipfile.lock

@@ -61,7 +61,7 @@ pytz = "*"
 opentelemetry-distro = "*"
 opentelemetry-instrumentation-flask = "*"
 grpcio = "*"
-"opentelemetry.instrumentation.requests" = "*"
+opentelemetry-instrumentation-requests = "*"
 opentelemetry-exporter-otlp-proto-grpc = "*"
 
 [requires]

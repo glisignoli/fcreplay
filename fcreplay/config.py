@@ -83,6 +83,9 @@ class Config:
         self.bad_words_file: str = str()
         "Path to the bad words file"
 
+        self.opentelemetry_config: dict = dict()
+        "Opentelemetry config"
+
         c = self._validate_config()
 
         # Load the config into the class variables
@@ -323,6 +326,34 @@ class Config:
                     'description': 'Path to bad words file',
                 }
             },
+            'opentelemetry_config': {
+                'type': 'dict',
+                'required': False,
+                'meta': {
+                    'default': {
+                        'enabled': False,
+                        'description': 'Opentelemetry configuration'
+                    }
+                },
+                'schema': {
+                    'enabled': {
+                        'type': 'boolean',
+                        'required': False,
+                    },
+                    'endpoint': {
+                        'type': 'string',
+                        'required': False,
+                    },
+                    'secure': {
+                        'type': 'boolean',
+                        'required': False,
+                    },
+                    'headers': {
+                        'type': 'dict',
+                        'required': False,
+                    }
+                }
+            }
         }
         self._config = self._get_config()
         self.validate_config(self._config, self.schema)

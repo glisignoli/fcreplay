@@ -12,6 +12,11 @@ app = create_app(CONFIG)
 if CONFIG.config.opentelemetry_config['enabled']:
     from fcreplay.site.tracing import Tracing
 
+    print("OpenTelemetry enabled")
+    print(f"Endpoint: {CONFIG.config.opentelemetry_config['endpoint']}")
+    print(f"Headers: {CONFIG.config.opentelemetry_config['headers']}")
+    print(f"Secure: {CONFIG.config.opentelemetry_config['secure']}")
+
     t = Tracing(
         endpoint=CONFIG.config.opentelemetry_config['endpoint'],
         secure=CONFIG.config.opentelemetry_config['secure'],

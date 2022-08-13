@@ -36,5 +36,9 @@
   "youtube_credentials": "UNUSED",
   "youtube_max_daily_uploads": 5,
   "youtube_secrets": "UNUSED",
-  "bad_words_file": "/home/fcrecorder/fcreplay/bad_words.txt"
+  "bad_words_file": "/home/fcrecorder/fcreplay/bad_words.txt",
+  "banned_users": [
+    "banneduser1",
+    "banneduser2"
+  ]
 }

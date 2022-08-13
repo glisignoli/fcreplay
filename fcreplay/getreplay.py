@@ -35,8 +35,42 @@ class Getreplay:
             IOError: Rase error when unable to get data or status code == 500
 
         Returns:
-            dict: Returns dict containting the request
+            dict: Returns dict containting the request Eg:
+            {
+                "results": {
+                    "results": [
+                        {
+                            "quarkid": "12341234121234-1234",
+                            "channelname": "Full channel name",
+                            "date": 1659855001234,
+                            "duration": 123.066,
+                            "emulator": "fbneo",
+                            "gameid": "rom_name",
+                            "num_matches": 2,
+                            "players": [
+                                {
+                                    "name": "Player1 Name",
+                                    "country": "US",
+                                    "rank": 2,
+                                    "score": 0
+                                },
+                                {
+                                    "name": "Player2 Name",
+                                    "country": "US",
+                                    "rank": 3,
+                                    "score": 2
+                                }
+                            ],
+                            "ranked": 3,
+                            "replay_file": "12341234121234-1234-replay.fs"
+                        }
+                    ],
+                    "count": 15
+                },
+                "res": "OK"
+            }
         """
+
         r = requests.post(
             "https://www.fightcade.com/api/",
             json=query
@@ -46,6 +80,20 @@ class Getreplay:
             raise IOError("Unable to get data")
         else:
             return r.json()
+
+    def check_banned_user(self, player):
+        """Check if player is banned.
+
+        Args:
+            player (str): Player to check
+
+        Returns:
+            bool: Returns True if player is banned, False if not
+        """
+        if player in self.config.banned_users:
+            return True
+        else:
+            return False
 
     def add_replay(self, replay, emulator, game, player_replay=True):
         """Add replay to the database.
@@ -70,6 +118,11 @@ class Getreplay:
         player_requested = player_replay
         fail_count = 0
 
+        # Check if player is banned:
+        for p in replay['players']:
+            if p['name'] in self.config.banned_users:
+                return status.BANNED_USER
+
         if 'rank' in replay['players'] or 'rank' in replay['players'][1]:
             if replay['players'][0]['rank'] is None:
                 p1_rank = '0'
@@ -90,7 +143,8 @@ class Getreplay:
         data = self.db.get_single_replay(challenge_id=challenge_id)
         if data is None:
             # Limit the length of videos
-            if length > int(self.config.min_replay_length) and length < int(self.config.max_replay_length):
+            if length > int(self.config.min_replay_length) and \
+               length < int(self.config.max_replay_length):
                 log.info(f"Adding {challenge_id} to queue")
                 self.db.add_replay(
                     challenge_id=challenge_id,
@@ -262,7 +316,7 @@ class Getreplay:
         }
         r = self.get_data(query)
 
-        # Look for replay in results:
+        # Look for replay in results
         for i in r['results']['results']:
             if challenge_id == i['quarkid']:
                 return self.add_replay(

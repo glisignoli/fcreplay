@@ -86,6 +86,9 @@ class Config:
         self.opentelemetry_config: dict = dict()
         "Opentelemetry config"
 
+        self.banned_users: list = list()
+        "List of banned users"
+
         c = self._validate_config()
 
         # Load the config into the class variables
@@ -324,6 +327,14 @@ class Config:
                 'meta': {
                     'default': '/home/fcrecorder/fcreplay/bad_words.txt',
                     'description': 'Path to bad words file',
+                }
+            },
+            'banned_users': {
+                'type': 'list',
+                'required': True,
+                'meta': {
+                    'default': [],
+                    'description': 'List of users to ban from recording'
                 }
             },
             'opentelemetry_config': {

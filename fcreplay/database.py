@@ -36,6 +36,7 @@ class Database:
             raise e
 
         self.Session = sessionmaker(bind=self.engine)
+        self.session = self.Session()
 
     def add_replay(self, challenge_id,
                    p1_loc, p2_loc,
@@ -70,8 +71,8 @@ class Database:
             fail_count (int, optional): Number of times the replay has failed. Defaults to 0
 
         """
-        session = self.Session()
-        session.add(
+        
+        self.session.add(
             Replays(
                 id=challenge_id,
                 p1_loc=p1_loc,
@@ -94,8 +95,8 @@ class Database:
                 fail_count=fail_count
             )
         )
-        session.commit()
-        session.close()
+        self.session.commit()
+        # self.session.close()
 
     def add_ia_filename(self, challenge_id, filename):
         """Add an IA filename to the database.
@@ -104,14 +105,14 @@ class Database:
             challenge_id (str): Challenge id
             filename (str): Filename
         """
-        session = self.Session()
-        session.query(Replays).filter_by(
+        
+        self.session.query(Replays).filter_by(
             id=challenge_id,
         ).update(
             {'ia_filename': filename}
         )
-        session.commit()
-        session.close()
+        self.session.commit()
+        # self.session.close()
 
     def get_single_replay(self, challenge_id):
         """Get a single replay by id.
@@ -119,11 +120,11 @@ class Database:
         Args:
             challenge_id (str): Challenge id
         """
-        session = self.Session()
-        replay = session.query(Replays).filter_by(
+        
+        replay = self.session.query(Replays).filter_by(
             id=challenge_id
         ).first()
-        session.close()
+        # self.session.close()
 
         return(replay)
 
@@ -133,14 +134,14 @@ class Database:
         Args:
             challenge_id (str): Challenge id
         """
-        session = self.Session()
-        session.query(Replays).filter_by(
+        
+        self.session.query(Replays).filter_by(
             id=challenge_id,
         ).update(
             {'player_requested': True}
         )
-        session.commit()
-        session.close()
+        self.session.commit()
+        # self.session.close()
 
     def add_detected_characters(self, challenge_id, p1_char, p2_char, vid_time, game):
         """Add detected characters to the replay.
@@ -152,16 +153,16 @@ class Database:
             vid_time (str): Time in the video the character was detected
             game (str): Game name
         """
-        session = self.Session()
-        session.add(Character_detect(
+        
+        self.session.add(Character_detect(
             challenge_id=challenge_id,
             p1_char=p1_char,
             p2_char=p2_char,
             vid_time=vid_time,
             game=game
         ))
-        session.commit()
-        session.close()
+        self.session.commit()
+        # self.session.close()
 
     def add_job(self, challenge_id, start_time, length):
         """Add a new encoding job to the database.
@@ -171,14 +172,14 @@ class Database:
             start_time (datetime): Time replay was added to be encoded
             length (str): Length of the replay
         """
-        session = self.Session()
-        session.add(Job(
+        
+        self.session.add(Job(
             id=challenge_id,
             start_time=start_time,
             instance=length
         ))
-        session.commit()
-        session.close()
+        self.session.commit()
+        # self.session.close()
 
     def remove_job(self, challenge_id):
         """Remove a job from the database.
@@ -186,12 +187,12 @@ class Database:
         Args:
             challenge_id (str): Challenge id
         """
-        session = self.Session()
-        session.query(Job).filter_by(
+        
+        self.session.query(Job).filter_by(
             id=challenge_id
         ).delete()
-        session.commit()
-        session.close()
+        self.session.commit()
+        # self.session.close()
 
     def get_job(self, challenge_id):
         """Return a job by its id
@@ -202,13 +203,13 @@ class Database:
         Returns:
             sqlalchemy.object: Returns sqlalchemy object of job
         """
-        session = self.Session()
-        job = session.query(
+        
+        job = self.session.query(
             Job
         ).filter_by(
             id=challenge_id
         ).first()
-        session.close()
+        # self.session.close()
         return job
 
     def get_job_count(self):
@@ -217,9 +218,9 @@ class Database:
         Returns:
             str: Number of jobs
         """
-        session = self.Session()
-        count = session.execute('select count(id) from job').first()[0]
-        session.close()
+        
+        count = self.session.execute('select count(id) from job').first()[0]
+        # self.session.close()
         return count
 
     def get_all_count(self):
@@ -228,9 +229,9 @@ class Database:
         Returns:
             str: Number of replays
         """
-        session = self.Session()
-        count = session.execute('select count(id) from replays').first()[0]
-        session.close()
+        
+        count = self.session.execute('select count(id) from replays').first()[0]
+        # self.session.close()
         return count
 
     def get_failed_count(self):
@@ -239,9 +240,9 @@ class Database:
         Returns:
             str: Number of failed replays.
         """
-        session = self.Session()
-        count = session.execute('select count(id) from replays where failed = true').first()[0]
-        session.close()
+        
+        count = self.session.execute('select count(id) from replays where failed = true').first()[0]
+        # self.session.close()
         return count
 
     def get_broken_count(self):
@@ -250,9 +251,9 @@ class Database:
         Returns:
             str: Number of broken replays
         """
-        session = self.Session()
-        count = session.execute("select count(id) from replays where status not like 'ADDED' and status not like 'FINISHED' and failed is false").first()[0]
-        session.close()
+        
+        count = self.session.execute("select count(id) from replays where status not like 'ADDED' and status not like 'FINISHED' and failed is false").first()[0]
+        # self.session.close()
         return count
 
     def get_pending_count(self):
@@ -261,9 +262,9 @@ class Database:
         Returns:
             str: Number of pending replays
         """
-        session = self.Session()
-        count = session.execute("select count(id) from replays where created = false and failed = false").first()[0]
-        session.close()
+        
+        count = self.session.execute("select count(id) from replays where created = false and failed = false").first()[0]
+        # self.session.close()
         return count
 
     def get_finished_count(self):
@@ -272,9 +273,9 @@ class Database:
         Returns:
             str: Number of completed replays
         """
-        session = self.Session()
-        count = session.execute("select count(id) from replays where created = true and failed = false").first()[0]
-        session.close()
+        
+        count = self.session.execute("select count(id) from replays where created = true and failed = false").first()[0]
+        # self.session.close()
         return count
 
     def update_status(self, challenge_id, status):
@@ -286,14 +287,14 @@ class Database:
         """
 
         ## TODO Add method to verify status code
-        session = self.Session()
-        session.query(Replays).filter_by(
+        
+        self.session.query(Replays).filter_by(
             id=challenge_id,
         ).update(
             {'status': status}
         )
-        session.commit()
-        session.close()
+        self.session.commit()
+        # self.session.close()
 
     def add_description(self, challenge_id, description):
         """Add a description to the database.
@@ -302,13 +303,13 @@ class Database:
             challenge_id (str): Challenge id
             description (str): Description
         """
-        session = self.Session()
-        session.add(Descriptions(
+        
+        self.session.add(Descriptions(
             id=challenge_id,
             description=description
         ))
-        session.commit()
-        session.close()
+        self.session.commit()
+        # self.session.close()
 
     def update_youtube_day_log_count(self, count, date):
         """update youtube day log.
@@ -317,8 +318,8 @@ class Database:
             count (int): Number of replays uploaded to youtube
             date (datetime): Current date
         """
-        session = self.Session()
-        session.query(Youtube_day_log).filter_by(
+        
+        self.session.query(Youtube_day_log).filter_by(
             id='count'
         ).update(
             {
@@ -326,8 +327,8 @@ class Database:
                 'date': date
             }
         )
-        session.commit()
-        session.close()
+        self.session.commit()
+        # self.session.close()
 
     def get_youtube_day_log(self):
         """Get youtube day log.
@@ -335,13 +336,13 @@ class Database:
         Returns:
             sqlalchemy.object: Contains the date and count
         """
-        session = self.Session()
-        day_log = session.query(
+        
+        day_log = self.session.query(
             Youtube_day_log
         ).filter_by(
             id='count'
         ).first()
-        session.close()
+        # self.session.close()
 
         return day_log
 
@@ -351,8 +352,8 @@ class Database:
         Returns:
             sqlalchemy.object: Contains the replay as a sqlalchemy.object
         """
-        session = self.Session()
-        replay = session.query(
+        
+        replay = self.session.query(
             Replays
         ).filter_by(
             player_requested=True,
@@ -362,7 +363,7 @@ class Database:
         ).order_by(
             Replays.date_added.desc()
         ).first()
-        session.close()
+        # self.session.close()
         return replay
 
     def get_random_replay(self):
@@ -371,8 +372,8 @@ class Database:
         Returns:
             sqlalchemy.object: Contains the replay as a sqlalchemy.object
         """
-        session = self.Session()
-        replay = session.query(
+        
+        replay = self.session.query(
             Replays
         ).filter_by(
             failed=False,
@@ -381,7 +382,7 @@ class Database:
         ).order_by(
             func.random()
         ).first()
-        session.close()
+        # self.session.close()
 
         return replay
 
@@ -391,8 +392,8 @@ class Database:
         Returns:
             sqlalchemy.object: Contains the replay as a sqlalchemy.object
         """
-        session = self.Session()
-        replay = session.query(
+        
+        replay = self.session.query(
             Replays
         ).filter_by(
             failed=False,
@@ -401,7 +402,7 @@ class Database:
         ).order_by(
             Replays.date_added.desc()
         ).first()
-        session.close()
+        # self.session.close()
 
         return replay
 
@@ -411,8 +412,8 @@ class Database:
         Args:
             challenge_id (str): Challenge id
         """
-        session = self.Session()
-        failed_replay = session.query(Replays).filter_by(
+        
+        failed_replay = self.session.query(Replays).filter_by(
             id=challenge_id
         ).first()
         if not isinstance(failed_replay.fail_count, int):
@@ -420,7 +421,7 @@ class Database:
         else:
             n = failed_replay.fail_count + 1
 
-        session.query(Replays).filter_by(
+        self.session.query(Replays).filter_by(
             id=challenge_id
         ).update(
             {
@@ -428,8 +429,8 @@ class Database:
                 'fail_count': n
             }
         )
-        session.commit()
-        session.close()
+        self.session.commit()
+        # self.session.close()
 
     def update_created_replay(self, challenge_id):
         """Marks the replay as created
@@ -437,16 +438,16 @@ class Database:
         Args:
             challenge_id (str): Challenge id
         """
-        session = self.Session()
-        session.query(Replays).filter_by(
+        
+        self.session.query(Replays).filter_by(
             id=challenge_id
         ).update(
             {
                 'created': True
             }
         )
-        session.commit()
-        session.close()
+        self.session.commit()
+        # self.session.close()
 
 
     def get_unprocessed_replays(self):
@@ -455,15 +456,15 @@ class Database:
         Returns:
             sqlalchemy.object: Returns a sqlalchemy.object containing all unprocessed replays
         """
-        session = self.Session()
-        replays = session.query(
+        
+        replays = self.session.query(
             Replays
         ).filter_by(
             failed=False,
             created=True,
             video_processed=False
         ).all()
-        session.close()
+        # self.session.close()
         return replays
 
     def set_replay_processed(self, challenge_id):
@@ -472,14 +473,14 @@ class Database:
         Args:
             challenge_id (str): Challenge id
         """
-        session = self.Session()
-        session.query(Replays).filter_by(
+        
+        self.session.query(Replays).filter_by(
             id=challenge_id
         ).update(
             {'video_processed': True, "date_added": datetime.datetime.now()}
         )
-        session.commit()
-        session.close()
+        self.session.commit()
+        # self.session.close()
 
     def set_youtube_uploaded(self, challenge_id, yt_bool):
         """Set whether or not video has been uploaded to youtube.
@@ -488,14 +489,14 @@ class Database:
             challenge_id (str): Challenge id
             yt_bool (bool): Has the video been uploaded to youtube
         """
-        session = self.Session()
-        session.query(Replays).filter_by(
+        
+        self.session.query(Replays).filter_by(
             id=challenge_id
         ).update(
             {'video_youtube_uploaded': yt_bool}
         )
-        session.commit()
-        session.close()
+        self.session.commit()
+        # self.session.close()
 
     def set_youtube_id(self, challenge_id, yt_id):
         """Set the youtube_id of a challenge.
@@ -504,14 +505,14 @@ class Database:
             challenge_id (str): Challenge id
             yt_id (str): Youtube id of the replay
         """
-        session = self.Session()
-        session.query(Replays).filter_by(
+        
+        self.session.query(Replays).filter_by(
             id=challenge_id
         ).update(
             {'video_youtube_id': yt_id}
         )
-        session.commit()
-        session.close()
+        self.session.commit()
+        # self.session.close()
 
     def rerecord_replay(self, challenge_id):
         """Rerecords a replay of a given challenge .
@@ -519,33 +520,33 @@ class Database:
         Args:
             challenge_id (str): Challenge id
         """
-        session = self.Session()
+        
         # Set replay to original status
-        session.query(Replays).filter_by(
+        self.session.query(Replays).filter_by(
             id=challenge_id
         ).update(
             {'failed': False, 'created': False, 'status': 'ADDED'}
         )
-        session.commit()
+        self.session.commit()
 
         # Remove description if it exists
-        session.query(Descriptions).filter_by(
+        self.session.query(Descriptions).filter_by(
             id=challenge_id
         ).delete()
-        session.commit()
+        self.session.commit()
 
         # Remove job if it exists
-        session.query(Job).filter_by(
+        self.session.query(Job).filter_by(
             id=challenge_id
         ).delete()
-        session.commit()
+        self.session.commit()
 
         # Remove character detection if it exists
-        session.query(Character_detect).filter_by(
+        self.session.query(Character_detect).filter_by(
             challenge_id=challenge_id
         ).delete()
-        session.commit()
-        session.close()
+        self.session.commit()
+        # self.session.close()
 
     def delete_replay(self, challenge_id):
         """Delete a replay.
@@ -553,31 +554,31 @@ class Database:
         Args:
             challenge_id (str): Challenge id
         """
-        session = self.Session()
+        
         # Remove replay if it exists
-        session.query(Replays).filter_by(
+        self.session.query(Replays).filter_by(
             id=challenge_id,
         ).delete()
-        session.commit()
+        self.session.commit()
 
         # Remove description if it exists
-        session.query(Descriptions).filter_by(
+        self.session.query(Descriptions).filter_by(
             id=challenge_id
         ).delete()
-        session.commit()
+        self.session.commit()
 
         # Remove job if it exists
-        session.query(Job).filter_by(
+        self.session.query(Job).filter_by(
             id=challenge_id
         ).delete()
-        session.commit()
+        self.session.commit()
 
         # Remove character detection if it exists
-        session.query(Character_detect).filter_by(
+        self.session.query(Character_detect).filter_by(
             challenge_id=challenge_id
         ).delete()
-        session.commit()
-        session.close()
+        self.session.commit()
+        # self.session.close()
 
     def get_all_failed_replays(self, limit=10):
         """Get all failed replays.
@@ -588,11 +589,11 @@ class Database:
         Returns:
             sqlalchemy.object: sqlalchemy.object containing failed replays
         """
-        session = self.Session()
-        failed_replays = session.query(Replays).filter_by(
+        
+        failed_replays = self.session.query(Replays).filter_by(
             failed=True,
         ).limit(limit).all()
-        session.close()
+        # self.session.close()
         return failed_replays
 
     def get_all_finished_replays(self, limit=10, order_by=Replays.date_added.desc()) -> list[Replays]:
@@ -604,12 +605,12 @@ class Database:
         Returns:
             sqlalchemy.object: sqlalchemy.object containing finished replays
         """
-        session = self.Session()
-        replays = session.query(Replays).filter_by(
+        
+        replays = self.session.query(Replays).filter_by(
             failed=False,
             created=True
         ).order_by(order_by).limit(limit).all()
-        session.close()
+        # self.session.close()
         return replays
 
     def get_all_queued_replays(self, limit=10):
@@ -621,12 +622,12 @@ class Database:
         Returns:
             sqlalchemy.object: sqlalchemy.object containing queued replays.
         """
-        session = self.Session()
-        replays = session.query(Replays).filter_by(
+        
+        replays = self.session.query(Replays).filter_by(
             failed=False,
             created=False
         ).limit(limit).all()
-        session.close()
+        # self.session.close()
         return replays
 
     def get_all_players(self, limit=10) -> list[str]:
@@ -638,9 +639,9 @@ class Database:
         Returns:
             list: List of play names
         """
-        session = self.Session()
-        replays = session.query(Replays).limit(limit).all()
-        session.close()
+        
+        replays = self.session.query(Replays).limit(limit).all()
+        # self.session.close()
 
         players = set()
 
@@ -659,13 +660,13 @@ class Database:
         Returns:
             sqlalchemy.object: sqlalchemy.object containing broken replays.
         """
-        session = self.Session()
-        replays = session.query(Replays).filter(
+        
+        replays = self.session.query(Replays).filter(
             Replays.failed == False,
             Replays.status != 'ADDED',
             Replays.status != 'FINISHED'
         ).limit(limit).all()
-        session.close()
+        # self.session.close()
         return replays
 
     def get_all_queued_player_replays(self):
@@ -674,8 +675,8 @@ class Database:
         Returns:
             sqlalchemt.object: Returns a sqlalchemy.object containing queued replays
         """
-        session = self.Session()
-        replays = session.query(
+        
+        replays = self.session.query(
             Replays
         ).filter_by(
             player_requested=True,
@@ -684,7 +685,7 @@ class Database:
         ).order_by(
             Replays.date_added.asc()
         ).all()
-        session.close()
+        # self.session.close()
         return replays
 
     def get_description(self, challenge_id):
@@ -696,9 +697,9 @@ class Database:
         Returns:
             sqlalchemy.object: sqlalchemy.object containing description
         """
-        session = self.Session()
-        description = session.query(Descriptions).filter_by(
+        
+        description = self.session.query(Descriptions).filter_by(
             id=challenge_id
         ).first()
-        session.close()
+        # self.session.close()
         return description

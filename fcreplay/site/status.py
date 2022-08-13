@@ -23,5 +23,6 @@ class Status:
             "UNSUPPORTED_GAME": "Game is unsupported",
             "INVALID_URL": "URL is invalid",
             "REPLAY_NOT_FOUND": "Replay was not found in database",
-            "BAD_WORDS_CHECKED": "Bad words checked"
+            "BAD_WORDS_CHECKED": "Bad words checked",
+            "BANNED_USER": "One or more of the users in the replay is banned"
         }

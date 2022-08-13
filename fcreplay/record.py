@@ -241,7 +241,7 @@ class Record:
             frame_counts.append(self.get_framecount(replay_length_seconds))
 
             # Debug the framecount
-            log.debug(f"Frame count is: {frame_counts[-1]}, or int {int((frame_counts[-1] / 60) / 60)} minutes")
+            log.debug(f"Frame count is: {frame_counts[-1]}, or {int((frame_counts[-1] / 60) / 60)} of {(int(replay_length_seconds / 60))} minutes")
 
             # Only display the minute time every minute, and never display 0 minutes
             if int(frame_counts[-1] / 60 / 60) != minute_time:

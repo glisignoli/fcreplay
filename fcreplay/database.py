@@ -1,3 +1,5 @@
+"""Fcreplay database class."""
+
 from fcreplay.config import Config
 from fcreplay.models import Base
 from fcreplay.models import Job, Replays, Character_detect, Descriptions, Youtube_day_log
@@ -69,9 +71,7 @@ class Database:
             video_processed (bool): Has the video been prossed (usually False)
             ia_filename (str, optional): Archive.org filename. Defaults to "EMPTY"
             fail_count (int, optional): Number of times the replay has failed. Defaults to 0
-
         """
-        
         self.session.add(
             Replays(
                 id=challenge_id,
@@ -105,7 +105,6 @@ class Database:
             challenge_id (str): Challenge id
             filename (str): Filename
         """
-        
         self.session.query(Replays).filter_by(
             id=challenge_id,
         ).update(
@@ -120,7 +119,6 @@ class Database:
         Args:
             challenge_id (str): Challenge id
         """
-        
         replay = self.session.query(Replays).filter_by(
             id=challenge_id
         ).first()
@@ -134,7 +132,6 @@ class Database:
         Args:
             challenge_id (str): Challenge id
         """
-        
         self.session.query(Replays).filter_by(
             id=challenge_id,
         ).update(
@@ -153,7 +150,6 @@ class Database:
             vid_time (str): Time in the video the character was detected
             game (str): Game name
         """
-        
         self.session.add(Character_detect(
             challenge_id=challenge_id,
             p1_char=p1_char,
@@ -162,7 +158,6 @@ class Database:
             game=game
         ))
         self.session.commit()
-        # self.session.close()
 
     def add_job(self, challenge_id, start_time, length):
         """Add a new encoding job to the database.
@@ -172,7 +167,6 @@ class Database:
             start_time (datetime): Time replay was added to be encoded
             length (str): Length of the replay
         """
-        
         self.session.add(Job(
             id=challenge_id,
             start_time=start_time,
@@ -187,7 +181,6 @@ class Database:
         Args:
             challenge_id (str): Challenge id
         """
-        
         self.session.query(Job).filter_by(
             id=challenge_id
         ).delete()
@@ -195,7 +188,7 @@ class Database:
         # self.session.close()
 
     def get_job(self, challenge_id):
-        """Return a job by its id
+        """Return a job by its id.
 
         Args:
             challenge_id (str): Challenge id
@@ -203,7 +196,6 @@ class Database:
         Returns:
             sqlalchemy.object: Returns sqlalchemy object of job
         """
-        
         job = self.session.query(
             Job
         ).filter_by(
@@ -218,7 +210,6 @@ class Database:
         Returns:
             str: Number of jobs
         """
-        
         count = self.session.execute('select count(id) from job').first()[0]
         # self.session.close()
         return count
@@ -229,7 +220,6 @@ class Database:
         Returns:
             str: Number of replays
         """
-        
         count = self.session.execute('select count(id) from replays').first()[0]
         # self.session.close()
         return count
@@ -240,18 +230,16 @@ class Database:
         Returns:
             str: Number of failed replays.
         """
-        
         count = self.session.execute('select count(id) from replays where failed = true').first()[0]
         # self.session.close()
         return count
 
     def get_broken_count(self):
-        """Return the number of 'broken' replays
+        """Return the number of 'broken' replays.
 
         Returns:
             str: Number of broken replays
         """
-        
         count = self.session.execute("select count(id) from replays where status not like 'ADDED' and status not like 'FINISHED' and failed is false").first()[0]
         # self.session.close()
         return count
@@ -262,7 +250,6 @@ class Database:
         Returns:
             str: Number of pending replays
         """
-        
         count = self.session.execute("select count(id) from replays where created = false and failed = false").first()[0]
         # self.session.close()
         return count
@@ -273,7 +260,6 @@ class Database:
         Returns:
             str: Number of completed replays
         """
-        
         count = self.session.execute("select count(id) from replays where created = true and failed = false").first()[0]
         # self.session.close()
         return count
@@ -285,9 +271,7 @@ class Database:
             challenge_id (str): Challenge id
             status (str): Status
         """
-
-        ## TODO Add method to verify status code
-        
+        # TODO Add method to verify status code
         self.session.query(Replays).filter_by(
             id=challenge_id,
         ).update(
@@ -303,7 +287,6 @@ class Database:
             challenge_id (str): Challenge id
             description (str): Description
         """
-        
         self.session.add(Descriptions(
             id=challenge_id,
             description=description
@@ -312,13 +295,12 @@ class Database:
         # self.session.close()
 
     def update_youtube_day_log_count(self, count, date):
-        """update youtube day log.
+        """Update youtube day log.
 
         Args:
             count (int): Number of replays uploaded to youtube
             date (datetime): Current date
         """
-        
         self.session.query(Youtube_day_log).filter_by(
             id='count'
         ).update(
@@ -336,7 +318,6 @@ class Database:
         Returns:
             sqlalchemy.object: Contains the date and count
         """
-        
         day_log = self.session.query(
             Youtube_day_log
         ).filter_by(
@@ -352,7 +333,6 @@ class Database:
         Returns:
             sqlalchemy.object: Contains the replay as a sqlalchemy.object
         """
-        
         replay = self.session.query(
             Replays
         ).filter_by(
@@ -372,7 +352,6 @@ class Database:
         Returns:
             sqlalchemy.object: Contains the replay as a sqlalchemy.object
         """
-        
         replay = self.session.query(
             Replays
         ).filter_by(
@@ -392,7 +371,6 @@ class Database:
         Returns:
             sqlalchemy.object: Contains the replay as a sqlalchemy.object
         """
-        
         replay = self.session.query(
             Replays
         ).filter_by(
@@ -407,12 +385,11 @@ class Database:
         return replay
 
     def update_failed_replay(self, challenge_id):
-        """Increments the failed replay count for a replay
+        """Increments the failed replay count for a replay.
 
         Args:
             challenge_id (str): Challenge id
         """
-        
         failed_replay = self.session.query(Replays).filter_by(
             id=challenge_id
         ).first()
@@ -433,12 +410,11 @@ class Database:
         # self.session.close()
 
     def update_created_replay(self, challenge_id):
-        """Marks the replay as created
+        """Mark the replay as created.
 
         Args:
             challenge_id (str): Challenge id
         """
-        
         self.session.query(Replays).filter_by(
             id=challenge_id
         ).update(
@@ -449,14 +425,12 @@ class Database:
         self.session.commit()
         # self.session.close()
 
-
     def get_unprocessed_replays(self):
         """Get all replays that are unprocessed.
 
         Returns:
             sqlalchemy.object: Returns a sqlalchemy.object containing all unprocessed replays
         """
-        
         replays = self.session.query(
             Replays
         ).filter_by(
@@ -473,7 +447,6 @@ class Database:
         Args:
             challenge_id (str): Challenge id
         """
-        
         self.session.query(Replays).filter_by(
             id=challenge_id
         ).update(
@@ -489,7 +462,6 @@ class Database:
             challenge_id (str): Challenge id
             yt_bool (bool): Has the video been uploaded to youtube
         """
-        
         self.session.query(Replays).filter_by(
             id=challenge_id
         ).update(
@@ -505,7 +477,6 @@ class Database:
             challenge_id (str): Challenge id
             yt_id (str): Youtube id of the replay
         """
-        
         self.session.query(Replays).filter_by(
             id=challenge_id
         ).update(
@@ -520,7 +491,6 @@ class Database:
         Args:
             challenge_id (str): Challenge id
         """
-        
         # Set replay to original status
         self.session.query(Replays).filter_by(
             id=challenge_id
@@ -554,7 +524,6 @@ class Database:
         Args:
             challenge_id (str): Challenge id
         """
-        
         # Remove replay if it exists
         self.session.query(Replays).filter_by(
             id=challenge_id,
@@ -589,7 +558,6 @@ class Database:
         Returns:
             sqlalchemy.object: sqlalchemy.object containing failed replays
         """
-        
         failed_replays = self.session.query(Replays).filter_by(
             failed=True,
         ).limit(limit).all()
@@ -605,7 +573,6 @@ class Database:
         Returns:
             sqlalchemy.object: sqlalchemy.object containing finished replays
         """
-        
         replays = self.session.query(Replays).filter_by(
             failed=False,
             created=True
@@ -622,7 +589,6 @@ class Database:
         Returns:
             sqlalchemy.object: sqlalchemy.object containing queued replays.
         """
-        
         replays = self.session.query(Replays).filter_by(
             failed=False,
             created=False
@@ -639,7 +605,6 @@ class Database:
         Returns:
             list: List of play names
         """
-        
         replays = self.session.query(Replays).limit(limit).all()
         # self.session.close()
 
@@ -660,7 +625,6 @@ class Database:
         Returns:
             sqlalchemy.object: sqlalchemy.object containing broken replays.
         """
-        
         replays = self.session.query(Replays).filter(
             Replays.failed == False,
             Replays.status != 'ADDED',
@@ -675,7 +639,6 @@ class Database:
         Returns:
             sqlalchemt.object: Returns a sqlalchemy.object containing queued replays
         """
-        
         replays = self.session.query(
             Replays
         ).filter_by(
@@ -697,7 +660,6 @@ class Database:
         Returns:
             sqlalchemy.object: sqlalchemy.object containing description
         """
-        
         description = self.session.query(Descriptions).filter_by(
             id=challenge_id
         ).first()

@@ -61,6 +61,7 @@ class TestSite:
         pass
 
     def test_search(self, app):
+        
         pass
 
     def test_robots_and_ads(self, app):

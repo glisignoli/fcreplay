@@ -40,5 +40,8 @@
   "banned_users": [
     "banneduser1",
     "banneduser2"
-  ]
+  ],
+  "opentelemetry_config": {
+    "enabled": false
+  }
 }

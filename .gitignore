@@ -49,3 +49,10 @@ bad_words.txt
 
 # Pip
 Pipfile.lock
+
+# Log files
+fcreplay_check_top_weekly.log
+fcreplay_check_video_status.log
+fcreplay_delete_failed_replays.log
+fcreplay_retry_failed_replays.log
+fcreplay_tasker.log

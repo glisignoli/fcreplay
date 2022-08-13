@@ -339,7 +339,7 @@ class Config:
             },
             'opentelemetry_config': {
                 'type': 'dict',
-                'required': False,
+                'required': True,
                 'meta': {
                     'default': {
                         'enabled': False,

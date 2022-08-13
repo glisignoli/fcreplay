@@ -1,11 +1,5 @@
 version: "3.8"
 services:
-  fcreplay-base:
-    image: fcreplay/base:latest
-    build:
-      context: .
-      dockerfile: Dockerfile.base
-      
   fcreplay-site:
     image: fcreplay/site:latest
     build:

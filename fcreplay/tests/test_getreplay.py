@@ -96,8 +96,8 @@ class TestGetreplay:
         ) == status.ADDED, "Should return status.ADDED"
 
         # Test bannded players and additional replays
-        g.config.banned_players = ["BannedPlayer1"]
-        r["quarkid"] = "12341234121234-2222",
+        g.config.banned_users = ["BannedPlayer1"]
+        r["quarkid"] = "12341234121234-2222"
         assert g.add_replay(
             replay=r,
             emulator="fbneo",
@@ -105,8 +105,8 @@ class TestGetreplay:
             player_replay=True
         ) == status.BANNED_USER, "Should return status.BANNED_USER when player 1 is banned"
 
-        g.config.banned_players = ["BannedPlayer2"]
-        r["quarkid"] = "12341234121234-3333",
+        g.config.banned_users = ["BannedPlayer2"]
+        r["quarkid"] = "12341234121234-3333"
         assert g.add_replay(
             replay=r,
             emulator="fbneo",
@@ -114,8 +114,8 @@ class TestGetreplay:
             player_replay=True
         ) == status.BANNED_USER, "Should return status.BANNED_USER when player 2 is banned"
 
-        g.config.banned_players = ["BannedPlayer1", "BannedPlayer2"]
-        r["quarkid"] = "12341234121234-4444",
+        g.config.banned_users = ["BannedPlayer1", "BannedPlayer2"]
+        r["quarkid"] = "12341234121234-4444"
         assert g.add_replay(
             replay=r,
             emulator="fbneo",

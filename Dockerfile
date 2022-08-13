@@ -1,6 +1,68 @@
-FROM fcreplay/base:latest as fightcade-stage
+FROM python:3.10-buster
 
 LABEL maintainer="glisignoli"
+
+# Required packages for build/run
+RUN apt-get update && apt-get install -y \
+  bash \
+  ffmpeg \
+  fontconfig \
+  git \
+  i3 \
+  i3status \
+  pulseaudio \
+  software-properties-common \
+  wget \
+  x11vnc \
+  xterm \
+  xvfb \
+  zenity \
+  zlib1g-dev
+
+RUN apt-add-repository contrib && \
+  apt-add-repository non-free
+
+# Newer version of mplayer
+RUN apt-get update && apt-get install -y \
+  libaa1-dev libasound2-dev libcaca-dev libcdparanoia-dev libdca-dev \
+  libdirectfb-dev libenca-dev libfontconfig1-dev libfreetype6-dev \
+  libfribidi-dev libgif-dev libgl1-mesa-dev libjack-jackd2-dev libopenal1 libpulse-dev \
+  libsdl1.2-dev libvdpau-dev libxinerama-dev libxv-dev libxvmc-dev libxxf86dga-dev \
+  libxxf86vm-dev librtmp-dev libsctp-dev libass-dev libfaac-dev libsmbclient-dev libtheora-dev \
+  libogg-dev libxvidcore-dev libspeex-dev libvpx-dev libdv4-dev \
+  libopencore-amrnb-dev libopencore-amrwb-dev libmp3lame-dev liblivemedia-dev libtwolame-dev \
+  libmad0-dev libgsm1-dev libbs2b-dev liblzo2-dev ladspa-sdk libfaad-dev \
+  libmpg123-dev libopus-dev libbluray-dev libaacs-dev libx264-dev \
+  yasm build-essential
+
+RUN cd /opt && \
+  wget http://www.mplayerhq.hu/MPlayer/releases/MPlayer-1.4.tar.xz && \
+  tar xvf MPlayer-1.4.tar.xz && \
+  cd /opt/MPlayer-1.4 && \
+  ./configure --prefix=/opt/mplayer && \
+  make && \
+  make install && \
+  rm -rf /opt/MPlayer-1.4.tar.xz && \
+  cd /opt && \
+  rm -rf /opt/MPlayer-1.4
+
+RUN dpkg --add-architecture i386 && \
+  apt update && \
+  apt install -y \
+    wine \
+    wine32 \
+    wine64 \
+    libwine \
+    libwine:i386 \
+    fonts-wine \
+    winetricks
+
+RUN pip3 install --upgrade cython pip scikit-build
+
+# Fix wine sound and video recording
+RUN winetricks -q avifil32
+RUN winetricks -q d3dx9
+RUN winetricks sound=pulse
 
 # Download Fightcade linux
 RUN cd / && \
@@ -25,26 +87,22 @@ COPY ./files/framecount.lua /Fightcade/emulator/fbneo/lua/
 # Create empty framecount.txt
 RUN echo 0 > /Fightcade/emulator/fbneo/lua/framecount.txt
 
-FROM fcreplay/base:latest as flags-stage 
 # Download flag icons for thumbnails
 RUN cd /opt && \
   git clone https://github.com/hampusborgos/country-flags.git ./flags
 
-FROM fcreplay/base:latest as fonts-stage
 # Add fonts for thumbnails
 RUN cd /opt && \
   git clone https://github.com/grays/droid-fonts.git
 
-FROM fcreplay/base:latest as fcreplay-stage
 # Install fcreplay
-RUN mkdir /root/fcreplay
+COPY fcreplay /root/fcreplay
 COPY requirements.txt /root/fcreplay
 COPY setup.py /root/setup.py
 RUN cd /root && python3 setup.py install
 RUN cd /root/fcreplay && pip3 install -r requirements.txt
-COPY fcreplay /root/fcreplay
 
-FROM fcreplay/base:latest as i3-stage
+
 # Setup i3 for autostart
 RUN mkdir -p /root/.config/i3
 COPY files/i3_config /root/.config/i3/config
@@ -66,13 +124,6 @@ COPY files/docker-entrypoint.sh /docker-entrypoint.sh
 
 # Create an empty config.json file to overwrite with docker
 RUN touch /root/config.json
-
-
-# Copy Stages
-COPY --from=fightcade-stage /Fightcade /Fightcade
-COPY --from=flags-stage /opt/flags /opt/flags
-COPY --from=fonts-stage /opt/droid-fonts /opt/droid-fonts
-COPY --from=fcreplay-stage /root/fcreplay /root/fcreplay
 
 CMD ["fcrecord"]
 ENTRYPOINT ["/docker-entrypoint.sh"]

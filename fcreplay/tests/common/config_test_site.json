@@ -30,7 +30,7 @@
   "resolution": [1920, 1080],
   "remove_old_avi_files": true,
   "secret_key": "SOME_TEST_SECERT_KEY",
-  "sql_baseurl": "",
+  "sql_baseurl": "sqlite+pysqlite:///:memory:",
   "upload_to_ia": false,
   "upload_to_yt": false,
   "youtube_credentials": "UNUSED",

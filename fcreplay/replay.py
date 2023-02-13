@@ -377,8 +377,12 @@ class Replay:
             boolean: Success or failure
         """
         log.info("Checking bad words")
-        with open(self.config.bad_words_file, 'r') as bad_words_file:
-            bad_words = bad_words_file.read().splitlines()
+        try:
+            with open(self.config.bad_words_file, 'r') as bad_words_file:
+                bad_words = bad_words_file.read().splitlines()
+        except FileNotFoundError:
+            log.error(f"Bad words file {self.config.bad_words_file} doesn't exist")
+            return False
         bad_words = [x.lower() for x in bad_words]
 
         for word in bad_words:

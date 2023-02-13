@@ -63,37 +63,37 @@ def playerListSearch():
     return jsonify(playerlist)
 
 
-@app.route('/submit')
-def submit():
-    searchForm = SearchForm()
-    submitForm = SubmitForm()
-    return render_template('submit.j2.html', form=searchForm, submitForm=submitForm, submit_active=True)
+# @app.route('/submit')
+# def submit():
+#     searchForm = SearchForm()
+#     submitForm = SubmitForm()
+#    return render_template('submit.j2.html', form=searchForm, submitForm=submitForm, submit_active=True)
 
 
-@app.route('/submitResult', methods=['POST', 'GET'])
-def submitResult():
-    logging.debug(f"Session: {session}")
-    # I feel like there should be a better way to do this
-    if request.method == 'POST':
-        result = SubmitForm(request.form)
+# @app.route('/submitResult', methods=['POST', 'GET'])
+# def submitResult():
+#     logging.debug(f"Session: {session}")
+#     # I feel like there should be a better way to do this
+#     if request.method == 'POST':
+#         result = SubmitForm(request.form)
 
-        challenge_id = result.challenge_url.data
-        session['challenge_url'] = result.challenge_url.data
+#         challenge_id = result.challenge_url.data
+#         session['challenge_url'] = result.challenge_url.data
 
-        from fcreplay.getreplay import Getreplay
-        replay_result = Getreplay().get_replay(challenge_id, player_requested=True)
+#         from fcreplay.getreplay import Getreplay
+#         replay_result = Getreplay().get_replay(challenge_id, player_requested=True)
 
-        session['replay_result'] = replay_result
-        logging.info(f"Submit replay: {challenge_id} status is: {replay_result}")
+#         session['replay_result'] = replay_result
+#         logging.info(f"Submit replay: {challenge_id} status is: {replay_result}")
 
-        # Add replay and get status here
-        return redirect(url_for('blueprint.submitResult'))
-    else:
-        searchForm = SearchForm()
-        if 'replay_result' not in session:
-            return index()
-        result = session['replay_result']
-        return render_template('submitResult.j2.html', form=searchForm, result=result, submt_active=True)
+#         # Add replay and get status here
+#         return redirect(url_for('blueprint.submitResult'))
+#     else:
+#         searchForm = SearchForm()
+#         if 'replay_result' not in session:
+#             return index()
+#         result = session['replay_result']
+#         return render_template('submitResult.j2.html', form=searchForm, result=result, submt_active=True)
 
 
 @app.route('/search/assets/<path:path>')

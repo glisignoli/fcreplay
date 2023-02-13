@@ -50,140 +50,140 @@ class TestSite:
         assert rv.status_code == 200
         assert rv.is_json
 
-    # Need to mock getreplay.get_data
-    @patch('fcreplay.getreplay.requests')
-    @patch('fcreplay.getreplay.Config')
-    @patch('fcreplay.database.Config')
-    def test_submit(self, mock_config_db: MagicMock, mock_config_gr, mock_requests, app: FlaskClient):
-        """Test the submit page."""
-        # Need to test submissions for good data, bad data and banned players
-        mock_sqlite_baseurl = MagicMock()
-        mock_sqlite_baseurl.sql_baseurl = 'sqlite+pysqlite:///:memory:'
+    # # Need to mock getreplay.get_data
+    # @patch('fcreplay.getreplay.requests')
+    # @patch('fcreplay.getreplay.Config')
+    # @patch('fcreplay.database.Config')
+    # def test_submit(self, mock_config_db: MagicMock, mock_config_gr, mock_requests, app: FlaskClient):
+    #     """Test the submit page."""
+    #     # Need to test submissions for good data, bad data and banned players
+    #     mock_sqlite_baseurl = MagicMock()
+    #     mock_sqlite_baseurl.sql_baseurl = 'sqlite+pysqlite:///:memory:'
 
-        mock_config_db.return_value = mock_sqlite_baseurl
+    #     mock_config_db.return_value = mock_sqlite_baseurl
 
-        mock_config_gr_data = MagicMock()
-        mock_config_gr_data.min_replay_length = 1
-        mock_config_gr_data.max_replay_length = 1000
+    #     mock_config_gr_data = MagicMock()
+    #     mock_config_gr_data.min_replay_length = 1
+    #     mock_config_gr_data.max_replay_length = 1000
 
-        mock_config_gr.return_value = mock_config_gr_data
+    #     mock_config_gr.return_value = mock_config_gr_data
 
-        mock_requests.status_code = 200
+    #     mock_requests.status_code = 200
 
-        mock_post = MagicMock()
-        mock_post.json.return_value = {
-            "results": {
-                "results": [
-                    {
-                        "quarkid": "1234567891234-1234",
-                        "channelname": "Full channel name",
-                        "date": 1659855001234,
-                        "duration": 123.066,
-                        "emulator": "fbneo",
-                        "gameid": "rom_name",
-                        "num_matches": 2,
-                        "players": [
-                            {
-                                "name": "Player1 Name",
-                                "country": "US",
-                                "rank": 2,
-                                "score": 0
-                            },
-                            {
-                                "name": "Player2 Name",
-                                "country": "US",
-                                "rank": 3,
-                                "score": 2
-                            }
-                        ],
-                        "ranked": 3,
-                        "replay_file": "12341234121234-1234-replay.fs"
-                    }
-                ],
-                "count": 15
-            },
-            "res": "OK"
-        }
-        mock_requests.post.return_value = mock_post
+    #     mock_post = MagicMock()
+    #     mock_post.json.return_value = {
+    #         "results": {
+    #             "results": [
+    #                 {
+    #                     "quarkid": "1234567891234-1234",
+    #                     "channelname": "Full channel name",
+    #                     "date": 1659855001234,
+    #                     "duration": 123.066,
+    #                     "emulator": "fbneo",
+    #                     "gameid": "rom_name",
+    #                     "num_matches": 2,
+    #                     "players": [
+    #                         {
+    #                             "name": "Player1 Name",
+    #                             "country": "US",
+    #                             "rank": 2,
+    #                             "score": 0
+    #                         },
+    #                         {
+    #                             "name": "Player2 Name",
+    #                             "country": "US",
+    #                             "rank": 3,
+    #                             "score": 2
+    #                         }
+    #                     ],
+    #                     "ranked": 3,
+    #                     "replay_file": "12341234121234-1234-replay.fs"
+    #                 }
+    #             ],
+    #             "count": 15
+    #         },
+    #         "res": "OK"
+    #     }
+    #     mock_requests.post.return_value = mock_post
 
-        with app:
-            rv = app.post('/submitResult', data={
-                "challenge_url": "https://replay.fightcade.com/fbneo/sf2/1234567891234-1234"
-            })
+    #     with app:
+    #         rv = app.post('/submitResult', data={
+    #             "challenge_url": "https://replay.fightcade.com/fbneo/sf2/1234567891234-1234"
+    #         })
 
-            assert session['replay_result'] == 'ADDED', 'Replay result should be ADDED'
-            assert rv.status_code == 302, "Should return 302, redirect"
+    #         assert session['replay_result'] == 'ADDED', 'Replay result should be ADDED'
+    #         assert rv.status_code == 302, "Should return 302, redirect"
 
-        with app:
-            rv = app.post('/submitResult', data={
-                "challenge_url": "not a url"
-            })
+    #     with app:
+    #         rv = app.post('/submitResult', data={
+    #             "challenge_url": "not a url"
+    #         })
 
-            assert session['replay_result'] == 'INVALID_URL', 'Replay result should be INVALID_URL'
-            assert rv.status_code == 302, "Should return 302, redirect"
+    #         assert session['replay_result'] == 'INVALID_URL', 'Replay result should be INVALID_URL'
+    #         assert rv.status_code == 302, "Should return 302, redirect"
 
-        mock_post.json.return_value = {
-            "results": {
-                "results": [
-                    {
-                        "quarkid": "1234567891234-1234",
-                        "channelname": "Full channel name",
-                        "date": 1659855001234,
-                        "duration": 123.066,
-                        "emulator": "fbneo",
-                        "gameid": "rom_name",
-                        "num_matches": 2,
-                        "players": [
-                            {
-                                "name": "BannedUser1",
-                                "country": "US",
-                                "rank": 2,
-                                "score": 0
-                            },
-                            {
-                                "name": "BannedUser2",
-                                "country": "US",
-                                "rank": 3,
-                                "score": 2
-                            }
-                        ],
-                        "ranked": 3,
-                        "replay_file": "12341234121234-1234-replay.fs"
-                    }
-                ],
-                "count": 15
-            },
-            "res": "OK"
-        }
-        mock_requests.post.return_value = mock_post
+    #     mock_post.json.return_value = {
+    #         "results": {
+    #             "results": [
+    #                 {
+    #                     "quarkid": "1234567891234-1234",
+    #                     "channelname": "Full channel name",
+    #                     "date": 1659855001234,
+    #                     "duration": 123.066,
+    #                     "emulator": "fbneo",
+    #                     "gameid": "rom_name",
+    #                     "num_matches": 2,
+    #                     "players": [
+    #                         {
+    #                             "name": "BannedUser1",
+    #                             "country": "US",
+    #                             "rank": 2,
+    #                             "score": 0
+    #                         },
+    #                         {
+    #                             "name": "BannedUser2",
+    #                             "country": "US",
+    #                             "rank": 3,
+    #                             "score": 2
+    #                         }
+    #                     ],
+    #                     "ranked": 3,
+    #                     "replay_file": "12341234121234-1234-replay.fs"
+    #                 }
+    #             ],
+    #             "count": 15
+    #         },
+    #         "res": "OK"
+    #     }
+    #     mock_requests.post.return_value = mock_post
 
-        with app:
-            mock_config_gr_data.banned_users = ['BannedUser1']
-            mock_config_gr.return_value = mock_config_gr_data
+    #     with app:
+    #         mock_config_gr_data.banned_users = ['BannedUser1']
+    #         mock_config_gr.return_value = mock_config_gr_data
 
-            rv = app.post('/submitResult', data={
-                "challenge_url": "https://replay.fightcade.com/fbneo/sf2/1234567891234-1234"
-            })
+    #         rv = app.post('/submitResult', data={
+    #             "challenge_url": "https://replay.fightcade.com/fbneo/sf2/1234567891234-1234"
+    #         })
 
-            assert session['replay_result'] == 'BANNED_USER', 'Replay result should be BANNED_USER'
-            assert rv.status_code == 302, "Should return 302, redirect"
+    #         assert session['replay_result'] == 'BANNED_USER', 'Replay result should be BANNED_USER'
+    #         assert rv.status_code == 302, "Should return 302, redirect"
 
-        with app:
-            mock_config_gr_data.banned_users = ['BannedUser2']
-            mock_config_gr.return_value = mock_config_gr_data
+    #     with app:
+    #         mock_config_gr_data.banned_users = ['BannedUser2']
+    #         mock_config_gr.return_value = mock_config_gr_data
 
-            rv = app.post('/submitResult', data={
-                "challenge_url": "https://replay.fightcade.com/fbneo/sf2/1234567891234-1234"
-            })
+    #         rv = app.post('/submitResult', data={
+    #             "challenge_url": "https://replay.fightcade.com/fbneo/sf2/1234567891234-1234"
+    #         })
 
-            assert session['replay_result'] == 'BANNED_USER', 'Replay result should be BANNED_USER'
-            assert rv.status_code == 302, "Should return 302, redirect"
+    #         assert session['replay_result'] == 'BANNED_USER', 'Replay result should be BANNED_USER'
+    #         assert rv.status_code == 302, "Should return 302, redirect"
 
-    def test_submitResult(self, app: FlaskClient):
-        """Test the submit page."""
-        rv = app.get('/submit')
+    # def test_submitResult(self, app: FlaskClient):
+    #     """Test the submit page."""
+    #     rv = app.get('/submit')
 
-        assert rv.status_code == 200
+    #     assert rv.status_code == 200
 
     def test_assets(self, app: FlaskClient):
         pass

@@ -95,7 +95,7 @@ uritemplate==4.1.1
 urllib3==1.26.11
 wcwidth==0.2.5
 websocket-client==1.3.3
-werkzeug==2.2.2
+werkzeug==2.2.3
 wrapt==1.14.1
 wtforms==3.0.1
 -e git+https://github.com/tokland/youtube-upload.git@6a30b55d0fd4976571a5b9b34c01fd41cec49c7a#egg=youtube-upload

@@ -57,7 +57,7 @@ packaging==21.3
 pillow==9.2.0
 pip==22.2.2
 progressbar2==4.0.0
-protobuf==3.20.1
+protobuf==3.20.2
 psycopg2==2.9.3
 pyasn1==0.5.0rc1
 pyasn1-modules==0.3.0rc1

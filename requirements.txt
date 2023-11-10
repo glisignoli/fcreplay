@@ -84,7 +84,7 @@ rfc3339==6.2
 rsa==4.9
 schedule==1.1.0
 schema==0.7.5
-setuptools==64.0.3
+setuptools==65.5.1
 six==1.16.0
 soupsieve==2.3.2.post1
 sqlalchemy==1.4.40
